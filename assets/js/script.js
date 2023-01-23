@@ -18,6 +18,30 @@ setInterval(function() {
     var timeTag = $('<p>').text(timeArray[i]).addClass('hour col-2');
     var eventText = $("<textarea>").addClass('description col-8').attr('id', i);
     var saveButton = $("<button>").text("save").addClass('saveBtn col-2');
+    $(saveButton).on('click', function(e){
+      var targetText = $(e.target).prev().val();
+      var eventObj = { id: $(eventText).attr('id'), text: targetText }
+   
+      console.log(targetText);
+      if(localStorage.getItem("event") === null) {
+        // Create an array of objects
+        var eventArray = [];
+        // Push my object to that array
+        eventArray.push(eventObj);
+        // Set localStorage to my array
+        localStorage.setItem('event', JSON.stringify(eventArray));
+        // If it exists
+      } else {
+        // Create an array
+        var eventArray = [];
+        // Get my localStorage which must be parsed 
+        eventArray = JSON.parse(localStorage.getItem('event'));
+        // Push my object to newly created array which is a mirror of localStorage
+        eventArray.push(eventObj);
+        // Push my Array of objects to localStorage
+        localStorage.setItem('event', JSON.stringify(eventArray));
+      }  
+    });
 
     if(startingHour < currentHour) {
       $(eventText).addClass('past');
@@ -36,12 +60,8 @@ setInterval(function() {
   );
 
   $('.container').append(row);
-  }
+  
+}
 
-  var number = 0;
-  // Event listener for testing
-  $('saveBtn').on('click',function(){    
-   number++;
-   console.log(number);
-});
+  
 
