@@ -1,40 +1,34 @@
-//Pseudo 
-
-// Create dummy label 9am, 10am etc.
-// create input that will hold our event text
-// Create button 
-// Display current Date under Title element
-// Create click event for button
-// When clicked save Text Area value to localStorage
-// Validation when localStorage is empty and when there is value in there
-// We need id for each textarea
-// loop that creates
-
-//var today = moment();
+//Get current time
 var currentTime = $('#currentDay');
 
+//Get Current hour
+var currentHour = moment().format('H');
+
+//Create array that holds each <p> tag hour
 var timeArray = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"];
 
 setInterval(function() {
     currentTime.text(moment().format('MMMM Do YYYY, h:mm:ss a'));
   }, 1000);
 
+  var startingHour = 9;
+
   for (var i = 0; i < timeArray.length; i++) {
-    var row = $('div').addClass('row');
-    var timeTag = $('<p>').text(timeArray[i]).addClass('hour');
-    var eventText = $("<textarea>").addClass('description');
-    var saveButton = $("<button>").text("save").addClass('saveBtn');
+    var row = $('<div>').addClass('row time-block');
+    var timeTag = $('<p>').text(timeArray[i]).addClass('hour col-2');
+    var eventText = $("<textarea>").addClass('description col-8').attr('id', i);
+    var saveButton = $("<button>").text("save").addClass('saveBtn col-2');
 
-  // You can also chain methods onto new lines to keep code clean
-//   var totalTdEl = $('<td>')
-//     .addClass('p-2')
-//     .text('$' + totalEarnings);
+    if(startingHour < currentHour) {
+      $(eventText).addClass('past');
+    } else if(startingHour > currentHour) {
+      $(eventText).addClass('future')
+    } else {
+      $(eventText).addClass('present');
+    }
 
-//   var deleteProjectBtn = $('<td>')
-//     .addClass('p-2 delete-project-btn text-center')
-//     .text('X');
+    startingHour++;
 
-  // By listing each `<td>` variable as an argument, each one will be appended in that order
   row.append(
     timeTag,
     eventText,
@@ -42,15 +36,12 @@ setInterval(function() {
   );
 
   $('.container').append(row);
-
-
-   /* var row = $("<div>");
-    var timeTag = $("<p>");
-    var eventText = $("<TextArea>");
-    var saveButton = $("<button>");
-
-    timeTag.text("9am");
-    $('.container').append(row).append(timeTag).append(eventText).append(saveButton); */
-
   }
+
+  var number = 0;
+  // Event listener for testing
+  $('saveBtn').on('click',function(){    
+   number++;
+   console.log(number);
+});
 
