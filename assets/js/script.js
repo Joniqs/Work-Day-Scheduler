@@ -8,7 +8,7 @@ var currentHour = moment().format('H');
 var timeArray = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"];
 
 setInterval(function() {
-    currentTime.text(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    currentTime.text(moment().format('MMMM Do YYYY'));
   }, 1000);
 
   var startingHour = 9;
@@ -39,14 +39,16 @@ setInterval(function() {
 
 }
 
-$('.saveBtn').on('click', function(e){
-  var targetText = $(e.target).prev().val();
-  var targetId = $(e.target).prev().data('data-slot');
+$('.saveBtn').on('click', function(){
+  // TEXT CONTENT OF SIBLING AND ITS WORKING
+  var targetText = $(this).siblings('.description').val();
+  // SELECT MY TEXTAREA AND IS WORKING !!!
+  var targetId = $(this).siblings(".description").attr('data-slot');
   console.log(targetId);
   var eventObj = { id: targetId, text: targetText }
 
   console.log(targetText);
-  if(localStorage.getItem("event") === null) {
+  if(localStorage.getItem('event') === null) {
     // Create an array of objects
     var eventArray = [];
     // Push my object to that array
@@ -63,10 +65,29 @@ $('.saveBtn').on('click', function(e){
     eventArray.push(eventObj);
     // Push my Array of objects to localStorage
     localStorage.setItem('event', JSON.stringify(eventArray));
+    // Show it my textarea
   }  
 });
 
-//$(document).on("ready", getEvent())
+function getItems() {
+  // Check if localStorage is empty
+  if(localStorage.getItem("event") !== null) {
+      // Get my localStorage which must be parsed
+      var eventText = JSON.parse(localStorage.getItem('event'));
+      // Sorts the values ​​from the highest score (new array)
+      var sortedArray = eventText.sort((obj1, obj2) => {
+          return obj1.id - obj2.id;
+      });
+      console.log(sortedArray);
+      // For each sorted element
+      sortedArray.forEach(element => {
+        $('[data-slot=' + element.id + ']').val(element.text);
+      });
+  }
+}
+
+$(window).on('load', getItems());
+
 
 
 
