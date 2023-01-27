@@ -1,92 +1,62 @@
-//Get current time
+//Get element where I display current day
 var currentTime = $('#currentDay');
 
 //Get Current hour
 var currentHour = moment().format('H');
 
-//Create array that holds each <p> tag hour
-var timeArray = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm"];
-
+//Update my date every second
 setInterval(function() {
-    currentTime.text(moment().format('MMMM Do YYYY'));
+    currentTime.text(moment().format('dddd, MMMM Do '));
   }, 1000);
 
-  var startingHour = 9;
+//First timeblock which is 9am
+var startingHour = 9;
+//Last timeblock - index so I set this value to 18
+var endingHour = 18;
 
-  for (var i = 0; i < timeArray.length; i++) {
-    var row = $('<div>').addClass('row time-block');
-    var timeTag = $('<p>').text(timeArray[i]).addClass('hour col-2');
-    var eventText = $("<textarea>").addClass('description col-8').attr('data-slot', i);
-    var saveButton = $("<button>").text("save").addClass('saveBtn col-2');
-
-    if(startingHour < currentHour) {
-      $(eventText).addClass('past');
-    } else if(startingHour > currentHour) {
-      $(eventText).addClass('future')
-    } else {
-      $(eventText).addClass('present');
-    }
-
+//Loop through every timeblock 
+  for (var i = startingHour; i < endingHour; i++) {
+    //Select my textarea
+    var eventText = $("#hour-" + startingHour);
+    //Check time and add class .present .past or .future depend on current hour
+    checkHour();
+    //Increment start hour so we can do the same for every time block
     startingHour++;
-
-  row.append(
-    timeTag,
-    eventText,
-    saveButton
-  );
-
-  $('.container').append(row);
-
 }
 
-$('.saveBtn').on('click', function(){
-  // TEXT CONTENT OF SIBLING AND ITS WORKING
-  var targetText = $(this).siblings('.description').val();
-  // SELECT MY TEXTAREA AND IS WORKING !!!
-  var targetId = $(this).siblings(".description").attr('data-slot');
-  console.log(targetId);
-  var eventObj = { id: targetId, text: targetText }
-
-  console.log(targetText);
-  if(localStorage.getItem('event') === null) {
-    // Create an array of objects
-    var eventArray = [];
-    // Push my object to that array
-    eventArray.push(eventObj);
-    // Set localStorage to my array
-    localStorage.setItem('event', JSON.stringify(eventArray));
-    // If it exists
+//Function that changes color of textarea depend on current hour
+function checkHour() {
+  if(startingHour < currentHour) {
+    $(eventText).addClass('past');
+  } else if(startingHour > currentHour) {
+    $(eventText).addClass('future')
   } else {
-    // Create an array
-    var eventArray = [];
-    // Get my localStorage which must be parsed 
-    eventArray = JSON.parse(localStorage.getItem('event'));
-    // Push my object to newly created array which is a mirror of localStorage
-    eventArray.push(eventObj);
-    // Push my Array of objects to localStorage
-    localStorage.setItem('event', JSON.stringify(eventArray));
-    // Show it my textarea
-  }  
-});
-
-function getItems() {
-  // Check if localStorage is empty
-  if(localStorage.getItem("event") !== null) {
-      // Get my localStorage which must be parsed
-      var eventText = JSON.parse(localStorage.getItem('event'));
-      // Sorts the values ​​from the highest score (new array)
-      var sortedArray = eventText.sort((obj1, obj2) => {
-          return obj1.id - obj2.id;
-      });
-      console.log(sortedArray);
-      // For each sorted element
-      sortedArray.forEach(element => {
-        $('[data-slot=' + element.id + ']').val(element.text);
-      });
+    $(eventText).addClass('present');
   }
 }
 
-$(window).on('load', getItems());
+//when click save button, save it to local storage
+$('.saveBtn').on('click', function(){
+  // grab textarea text content
+  var targetText = $(this).siblings('.description').val();
+  // grab my textarea id value
+  var targetId = $(this).siblings(".description").attr('id');
+  // Push it to localstorage
+  localStorage.setItem(targetId, targetText)
+});
+
+//Function that gets items from my localstorage
+function getItems() {
+  //Array of timeblocks
+  var timeblocks = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+  //For every timeblock set text to localstorage value
+  timeblocks.forEach(element => {
+    $('#hour-' + element + '.description').val(localStorage.getItem('hour-' + element));
+  });
+}
+//Get items from localstorage for each timeblock
+getItems();
+
 
 
 
