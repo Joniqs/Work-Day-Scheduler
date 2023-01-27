@@ -7,7 +7,7 @@ I created this project so I can schedule my day.
 
 ## Demo
 
-![Alt text](/images/demo.png)
+![Alt text](/assets/images/demo.png)
 
 https://joniqs.github.io/Work-Day-Scheduler/
 
